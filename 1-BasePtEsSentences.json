@@ -1,0 +1,128 @@
+[
+  {
+    "id": 1,
+    "text": "Cinco libros que me cambiaron la vida.",
+    "isActive": true,
+    "likes": 17,
+    "dislikes": 3,
+    "flagged": false,
+    "language": "spanish",
+    "idUser": 1
+  },
+  {
+    "id": 2,
+    "text": "Cuando la vida te presente razones para llorar, demuéstrale que tienes mil y una razones para reír.",
+    "isActive": true,
+    "likes": 14,
+    "dislikes": 1,
+    "flagged": false,
+    "language": "spanish",
+    "idUser": 1
+  },
+  {
+    "id": 3,
+    "text": "La vida es muy peligrosa.",
+    "isActive": true,
+    "likes": 23,
+    "dislikes": 43,
+    "flagged": false,
+    "language": "spanish",
+    "idUser": 1
+  },
+  {
+    "id": 4,
+    "text": "A vida é maravilhosa, não é mesmo?",
+    "isActive": true,
+    "likes": 17,
+    "dislikes": 3,
+    "flagged": false,
+    "language": "portuguese",
+    "idUser": 2
+  },
+  {
+    "id": 5,
+    "text": "A fé desempenha em nossa vida um papel mais importante do que supomos, e é o que nos permite fazer mais do que pretendemos.",
+    "isActive": true,
+    "likes": 14,
+    "dislikes": 1,
+    "flagged": false,
+    "language": "portuguese",
+    "idUser": 1
+  },
+  {
+    "id": 6,
+    "text": "Porquê a vida é tão difícil?",
+    "isActive": true,
+    "likes": 23,
+    "dislikes": 43,
+    "flagged": false,
+    "language": "portuguese",
+    "idUser": 1
+  },
+  {
+    "id": 7,
+    "text": "Five books that changed my life.",
+    "isActive": true,
+    "likes": 17,
+    "dislikes": 3,
+    "flagged": false,
+    "language": "english",
+    "idUser": 1,
+    "translationOf": 1
+  },
+  {
+    "id": 8,
+    "text": "When life give you reasons to cry, show that you have a thousand and one reasons to smile.",
+    "isActive": true,
+    "likes": 14,
+    "dislikes": 1,
+    "flagged": false,
+    "language": "english",
+    "idUser": 1,
+    "translationOf": 2
+  },
+  {
+    "id": 9,
+    "text": "Life is very dangerous.",
+    "isActive": true,
+    "likes": 23,
+    "dislikes": 43,
+    "flagged": false,
+    "language": "english",
+    "idUser": 1,
+    "translationOf": 3
+  },
+  {
+    "id": 10,
+    "text": "Life is wonderful isn't it?",
+    "isActive": true,
+    "likes": 34,
+    "dislikes": 0,
+    "flagged": false,
+    "language": "english",
+    "idUser": 2,
+    "translationOf": 4
+  },
+  {
+    "id": 11,
+    "text": "Faith plays a more important role in our lives then we think, and it's what allows us to do more then we imagine.",
+    "isActive": true,
+    "likes": 128,
+    "dislikes": 43,
+    "flagged": false,
+    "language": "english",
+    "idUser": 1,
+    "translationOf": 5
+  },
+  {
+    "id": 12,
+    "text": "Why is life so hard?",
+    "isActive": true,
+    "likes": 43,
+    "dislikes": 26,
+    "flagged": false,
+    "language": "english",
+    "idUser": 1,
+    "translationOf": 6
+  }
+]
