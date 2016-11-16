@@ -1,4 +1,5 @@
 var fs = require('fs');
+var async = require('async');
 var elasticsearch = require('elasticsearch');
 var elasticSearchClient = new elasticsearch.Client({
     host: "localhost:9200",
@@ -17,40 +18,37 @@ basePtEs.forEach(function (sentence, index) {
 /**
  * Populate to es
  */
-var body = [];
-basePtEs.forEach(function (sentence) {
+async.each(basePtEs, function (sentence, iteratorCb) {
     var sentenceToInsertIntoBody = {
-        _type: 'sentence',
-        _id: sentence.id
+        type: 'sentence',
+        id: sentence.id,
+        body: sentence
     };
 
     switch (sentence.language) {
         case 'spanish':
-            sentenceToInsertIntoBody._index = 'lingozen-spanish';
+            sentenceToInsertIntoBody.index = 'lingozen-spanish';
             break;
         case 'portuguese':
-            sentenceToInsertIntoBody._index = 'lingozen-portuguese';
+            sentenceToInsertIntoBody.index = 'lingozen-portuguese';
             break;
         case 'english':
-            sentenceToInsertIntoBody._index = 'lingozen-english';
+            sentenceToInsertIntoBody.index = 'lingozen-english';
             break;
         default:
-            return console.error("Unknown lang ", sentence.language);
+            return iteratorCb(new Error("Unknown lang " + sentence.language));
     }
 
-    body.push(sentenceToInsertIntoBody);
-    body.push(sentence);
-});
+    elasticSearchClient.create(sentenceToInsertIntoBody, function (err, response) {
+        if (err) {
+            return iteratorCb(err)
+        }
 
-elasticSearchClient.bulk({body: body.join('\n')}, function (error, response) {
-    if (error) {
-        return console.error("ERROR: ", error);
+        console.log(response);
+        iteratorCb();
+    });
+}, function (err) {
+    if (err) {
+        console.error(err);
     }
-
-    if (response.errors) {
-        console.error("there was an error in response");
-        return console.error(JSON.stringify(response.items));
-    }
-
-    console.log(response);
 });

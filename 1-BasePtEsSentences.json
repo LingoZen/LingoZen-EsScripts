@@ -1,6 +1,6 @@
 [
   {
-    "id": 1,
+    "id": "spanish_1",
     "text": "Cinco libros que me cambiaron la vida.",
     "isActive": true,
     "likes": 17,
@@ -10,7 +10,7 @@
     "idUser": 1
   },
   {
-    "id": 2,
+    "id": "spanish_2",
     "text": "Cuando la vida te presente razones para llorar, demuéstrale que tienes mil y una razones para reír.",
     "isActive": true,
     "likes": 14,
@@ -20,7 +20,7 @@
     "idUser": 1
   },
   {
-    "id": 3,
+    "id": "spanish_3",
     "text": "La vida es muy peligrosa.",
     "isActive": true,
     "likes": 23,
@@ -30,7 +30,7 @@
     "idUser": 1
   },
   {
-    "id": 4,
+    "id": "portuguese_4",
     "text": "A vida é maravilhosa, não é mesmo?",
     "isActive": true,
     "likes": 17,
@@ -40,7 +40,7 @@
     "idUser": 2
   },
   {
-    "id": 5,
+    "id": "portuguese_5",
     "text": "A fé desempenha em nossa vida um papel mais importante do que supomos, e é o que nos permite fazer mais do que pretendemos.",
     "isActive": true,
     "likes": 14,
@@ -50,7 +50,7 @@
     "idUser": 1
   },
   {
-    "id": 6,
+    "id": "portuguese_6",
     "text": "Porquê a vida é tão difícil?",
     "isActive": true,
     "likes": 23,
@@ -60,7 +60,7 @@
     "idUser": 1
   },
   {
-    "id": 7,
+    "id": "english_7",
     "text": "Five books that changed my life.",
     "isActive": true,
     "likes": 17,
@@ -68,10 +68,10 @@
     "flagged": false,
     "language": "english",
     "idUser": 1,
-    "translationOf": 1
+    "translationOf": "spanish_1"
   },
   {
-    "id": 8,
+    "id": "english_8",
     "text": "When life give you reasons to cry, show that you have a thousand and one reasons to smile.",
     "isActive": true,
     "likes": 14,
@@ -79,10 +79,10 @@
     "flagged": false,
     "language": "english",
     "idUser": 1,
-    "translationOf": 2
+    "translationOf": "spanish_2"
   },
   {
-    "id": 9,
+    "id": "english_9",
     "text": "Life is very dangerous.",
     "isActive": true,
     "likes": 23,
@@ -90,10 +90,10 @@
     "flagged": false,
     "language": "english",
     "idUser": 1,
-    "translationOf": 3
+    "translationOf": "spanish_3"
   },
   {
-    "id": 10,
+    "id": "english_10",
     "text": "Life is wonderful isn't it?",
     "isActive": true,
     "likes": 34,
@@ -101,10 +101,10 @@
     "flagged": false,
     "language": "english",
     "idUser": 2,
-    "translationOf": 4
+    "translationOf": "portuguese_4"
   },
   {
-    "id": 11,
+    "id": "english_11",
     "text": "Faith plays a more important role in our lives then we think, and it's what allows us to do more then we imagine.",
     "isActive": true,
     "likes": 128,
@@ -112,10 +112,10 @@
     "flagged": false,
     "language": "english",
     "idUser": 1,
-    "translationOf": 5
+    "translationOf": "portuguese_5"
   },
   {
-    "id": 12,
+    "id": "english_12",
     "text": "Why is life so hard?",
     "isActive": true,
     "likes": 43,
@@ -123,6 +123,6 @@
     "flagged": false,
     "language": "english",
     "idUser": 1,
-    "translationOf": 6
+    "translationOf": "portuguese_6"
   }
 ]
