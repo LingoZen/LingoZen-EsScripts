@@ -4,8 +4,11 @@
   "description": "",
   "main": "0-SetupIndex.js",
   "dependencies": {
-    "async": "^2.1.2",
-    "elasticsearch": "^12.0.1"
+    "async": "^2.1.4",
+    "cheerio": "^0.22.0",
+    "elasticsearch": "^12.0.1",
+    "node-uuid": "^1.4.7",
+    "request": "^2.79.0"
   },
   "devDependencies": {},
   "scripts": {

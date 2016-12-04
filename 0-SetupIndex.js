@@ -1,9 +1,10 @@
-var elasticsearch = require('elasticsearch');
-var async = require('async');
-var elasticSearchClient = new elasticsearch.Client({
+let elasticsearch = require('elasticsearch');
+let async = require('async');
+let elasticSearchClient = new elasticsearch.Client({
+    // host: "search-lz-es-asjzii5ehwnhh3fmzpihgvcdrq.us-east-1.es.amazonaws.com",
     host: "localhost:9200"
 });
-var defaultMapping = {
+let defaultMapping = {
     mappings: {
         sentence: {
             properties: {
@@ -49,95 +50,68 @@ var defaultMapping = {
     }
 };
 
+let languagesWithMappingHash = {
+    czech: 'czech',
+    dutch: 'dutch',
+    english: 'english',
+    french: 'french',
+    italian: 'italian',
+    // japanese: 'japanese',
+    // korean: 'korean',
+    german: 'german',
+    greek: 'greek',
+    hindi: 'hindi',
+    portuguese: 'portuguese',
+    russian: 'russian',
+    spanish: 'spanish'
+};
+
 async.series([
     function waitForConnection(cb) {
         elasticSearchClient.ping(function (err) {
             cb();
         });
     },
-    function deletePortugueseIndex(cb) {
-        elasticSearchClient.indices.exists({
-            index: 'lingozen-portuguese'
-        }, function (err, response) {
-            if (err) {
-                return cb(err);
-            }
+    function deleteIndecies(cb) {
+        async.each(Object.keys(languagesWithMappingHash),
+            (language, langIt) => {
+                let index = `lingozen-${language}`;
+                elasticSearchClient.indices.exists({
+                    index: index
+                }, function (err, response) {
+                    if (err) {
+                        return langIt(err);
+                    }
 
-            if (response) {
-                return elasticSearchClient.indices.delete({index: 'lingozen-portuguese'}, function (err) {
-                    cb(err);
+                    if (response) {
+                        return elasticSearchClient.indices.delete({index: index}, function (err) {
+                            langIt(err);
+                        });
+                    }
+
+                    langIt();
                 });
-            }
-
-            cb();
-        });
+            }, (err) => {
+                cb(err);
+            });
     },
-    function deleteSpanishIndex(cb) {
-        elasticSearchClient.indices.exists({
-            index: 'lingozen-spanish'
-        }, function (err, response) {
-            if (err) {
-                return cb(err);
-            }
 
-            if (response) {
-                return elasticSearchClient.indices.delete({index: 'lingozen-spanish'}, function (err) {
-                    cb(err);
+    function addIndecies(cb) {
+        async.each(Object.keys(languagesWithMappingHash),
+            (language, langIt) => {
+                let index = `lingozen-${language}`;
+                let mapping = JSON.parse(JSON.stringify(defaultMapping));
+                mapping.mappings.sentence.properties.text.fields.stemmed.analyzer = languagesWithMappingHash[language];
+
+                elasticSearchClient.indices.create({
+                    index: index,
+                    body: mapping
+                }, function (err, response) {
+                    langIt(err, response);
                 });
-            }
-
-            cb();
-        });
-    },
-    function deleteEnglishIndex(cb) {
-        elasticSearchClient.indices.exists({
-            index: 'lingozen-english'
-        }, function (err, response) {
-            if (err) {
-                return cb(err);
-            }
-
-            if (response) {
-                return elasticSearchClient.indices.delete({index: 'lingozen-english'}, function (err) {
-                    cb(err);
-                });
-            }
-
-            cb();
-        });
-    },
-    function addPortugueseIndex(cb) {
-        var portugueseMapping = JSON.parse(JSON.stringify(defaultMapping));
-        portugueseMapping.mappings.sentence.properties.text.fields.stemmed.analyzer = 'portuguese';
-
-        elasticSearchClient.indices.create({
-            index: 'lingozen-portuguese',
-            body: portugueseMapping
-        }, function (err, response) {
-            cb(err, response);
-        });
-    },
-    function addSpanishIndex(cb) {
-        var spanishMapping = JSON.parse(JSON.stringify(defaultMapping));
-        spanishMapping.mappings.sentence.properties.text.fields.stemmed.analyzer = 'spanish';
-
-        elasticSearchClient.indices.create({
-            index: 'lingozen-spanish',
-            body: spanishMapping
-        }, function (err, response) {
-            cb(err, response);
-        });
-    },
-    function addEnglishIndex(cb) {
-        var englishMapping = JSON.parse(JSON.stringify(defaultMapping));
-        englishMapping.mappings.sentence.properties.text.fields.stemmed.analyzer = 'english';
-
-        elasticSearchClient.indices.create({
-            index: 'lingozen-english',
-            body: englishMapping
-        }, function (err, response) {
-            cb(err, response);
-        });
+            }, (err) => {
+                cb(err);
+            });
     }
 ], function (err) {
     if (err) {
