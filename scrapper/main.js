@@ -26,7 +26,7 @@ langsToScrape.forEach(function (lang) {
     sentences[lang] = [];
 });
 
-const NUMBER_OF_RANDOMS_TO_DO = 500;
+const NUMBER_OF_RANDOMS_TO_DO = 20;
 let complete = 0;
 async.times(NUMBER_OF_RANDOMS_TO_DO, function (index, timesCb) {
     request(wikipediaRandomUrl, function (timesErr, timesResponse, timesBody) {
@@ -63,7 +63,6 @@ async.times(NUMBER_OF_RANDOMS_TO_DO, function (index, timesCb) {
                     text = text.replace(/\[[0-9]*\]/g, '');
 
                     if (!(/(\.|\?)$/.test(text))) {
-
                         return itCallback();
                     }
 
@@ -159,8 +158,8 @@ async.times(NUMBER_OF_RANDOMS_TO_DO, function (index, timesCb) {
 
     console.log('sentenceArray', sentenceArray);
 
-    let scrappedSentences = JSON.parse(fs.readFileSync('scrapped.json', 'utf8'));
-    let scrappedPartialSentences = JSON.parse(fs.readFileSync('scrapped-partial.json', 'utf8'));
+    let scrappedSentences = JSON.parse(fs.readFileSync('scrapped.json', {encoding: 'utf8', flag: 'r'}));
+    let scrappedPartialSentences = JSON.parse(fs.readFileSync('scrapped-partial.json', {encoding: 'utf8', flag: 'r'}));
 
     scrappedSentences = scrappedSentences.concat(sentenceArray);
     scrappedPartialSentences = scrappedPartialSentences.concat(sentenceArray);
@@ -181,18 +180,55 @@ async.times(NUMBER_OF_RANDOMS_TO_DO, function (index, timesCb) {
 });
 
 function getArrayOfSentencesFromText(text) {
-    text = text.trim();
+    return text
+    //remove spaces (leading trialing)
+        .trim()
+        //split on periods
+        .split('.')
+        //replace special chars
+        .map(sentence => {
+            if (sentence.indexOf('&quot;') > -1) {
+                console.log('HERE');
+            }
 
-    //split on period
-    let textArray = text.split('.').map(function (sentence) {
-        if (sentence.length) {
-            sentence += '.';
-        }
+            sentence = sentence.replace(/&quot;/g, '"');
+            sentence = sentence.replace(/&#39;/g, "'").trim();
 
-        return sentence.trim();
-    }).filter(function (notEmpty) {
-        return notEmpty && notEmpty.length;
-    });
+            return sentence;
+        })
+        //filter out anything that doesnt start with a letter
+        .filter(sentence => {
+            return sentence.length && /^[a-zA-Z]/.test(sentence);
+        })
+        //filter out anything that doesnt end with a letter
+        .filter(sentence => {
+            return sentence.length && /[a-zA-Z]$/.test(sentence);
+        })
+        //filter out anything that is under 30 chars
+        .filter(sentence => {
+            return sentence.length > 30;
+        })
+        //period to end of each sentecne and trim it
+        .map(sentence => {
+            sentence.trim();
 
-    return textArray;
+            if (sentence.length) {
+                sentence += '.'
+            }
+
+            return sentence;
+        })
+        //make sure braces match
+        .filter(bracesAreMatched)
+        //remove any empties
+        .filter(function (notEmpty) {
+            return notEmpty.length;
+        });
+}
+
+function bracesAreMatched(str) {
+    return /[(){}\[\]]/.test(str) &&
+        ( str.match(/\(/g) || '' ).length == ( str.match(/\)/g) || '' ).length &&
+        ( str.match(/\[/g) || '' ).length == ( str.match(/]/g) || '' ).length &&
+        ( str.match(/{/g) || '' ).length == ( str.match(/}/g) || '' ).length;
 }

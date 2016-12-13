@@ -1,7 +1,7 @@
 let elasticsearch = require('elasticsearch');
 let async = require('async');
 let elasticSearchClient = new elasticsearch.Client({
-    // host: "search-lz-es-asjzii5ehwnhh3fmzpihgvcdrq.us-east-1.es.amazonaws.com",
+    // host: "search-lz-es-asjzii5ehwnhh3fmzpihgvcdrq.us-east-1.es.amazonaws.com"
     host: "localhost:9200"
 });
 let defaultMapping = {
@@ -56,8 +56,8 @@ let languagesWithMappingHash = {
     english: 'english',
     french: 'french',
     italian: 'italian',
-    // japanese: 'japanese',
-    // korean: 'korean',
+    japanese: 'english', //to delete
+    korean: 'english', //to delete
     german: 'german',
     greek: 'greek',
     hindi: 'hindi',
@@ -99,6 +99,7 @@ async.series([
     function addIndecies(cb) {
         async.each(Object.keys(languagesWithMappingHash),
             (language, langIt) => {
+
                 let index = `lingozen-${language}`;
                 let mapping = JSON.parse(JSON.stringify(defaultMapping));
                 mapping.mappings.sentence.properties.text.fields.stemmed.analyzer = languagesWithMappingHash[language];

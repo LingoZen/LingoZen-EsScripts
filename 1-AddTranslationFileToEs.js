@@ -7,7 +7,9 @@ let elasticSearchClient = new elasticsearch.Client({
     requestTimeout: 0
 });
 
+let originals = JSON.parse(fs.readFileSync('./scrapper/scrapped.json', 'utf8'));
 let translations = JSON.parse(fs.readFileSync('./scrapper/translation.json', 'utf8'));
+
 let supportedLanguages = [
     'czech'
     , 'dutch'
@@ -30,6 +32,12 @@ Object.keys(translations).forEach(language => {
         numberOfSentencesToAdd += translations[language].length;
     }
 });
+originals.forEach(original => {
+    if (supportedLanguages.indexOf(original.language) > -1) {
+        numberOfSentencesToAdd++;
+    }
+});
+
 let counter = 0;
 /**
  * Populate to es
@@ -58,34 +66,7 @@ async.eachSeries(Object.keys(translations),
                     body: sentence
                 };
 
-                switch (language) {
-                    case 'spanish':
-                        sentenceToInsertIntoBody.index = 'lingozen-spanish';
-                        break;
-                    case 'portuguese':
-                        sentenceToInsertIntoBody.index = 'lingozen-portuguese';
-                        break;
-                    case 'english':
-                        sentenceToInsertIntoBody.index = 'lingozen-english';
-                        break;
-                    case 'russian':
-                        sentenceToInsertIntoBody.index = 'lingozen-russian';
-                        break;
-                    case 'japanese':
-                        sentenceToInsertIntoBody.index = 'lingozen-japanese';
-                        break;
-                    case 'french':
-                        sentenceToInsertIntoBody.index = 'lingozen-french';
-                        break;
-                    case 'korean':
-                        sentenceToInsertIntoBody.index = 'lingozen-korean';
-                        break;
-                    case 'italian':
-                        sentenceToInsertIntoBody.index = 'lingozen-italian';
-                        break;
-                    default:
-                        return iteratorCb(new Error("Unknown lang " + sentence.language));
-                }
+                sentenceToInsertIntoBody.index = getIndexName(language);
 
                 elasticSearchClient.create(sentenceToInsertIntoBody, function (err, response) {
                     if (err) {
@@ -112,10 +93,56 @@ async.eachSeries(Object.keys(translations),
     },
     function (err) {
         if (err) {
-            console.error(err);
+            return console.error(err);
         }
 
-        console.log(`Added ${counter} of ${numberOfSentencesToAdd}. ${(counter / numberOfSentencesToAdd * 100).toFixed(0)}%`);
-        console.log('Indexed all successfully');
+        async.eachSeries(originals, (original, originalItCb) => {
+            if (supportedLanguages.indexOf(original.language) === -1) {
+                console.warn(`Skipping ${original.id} because it has unsupported language ${original.language}`);
+                return originalItCb(); //unsupported lang, skip
+            }
+
+            let sentenceToInsertIntoBody = {
+                type: 'sentence',
+                id: original.id,
+                body: original
+            };
+
+            sentenceToInsertIntoBody.index = getIndexName(original.language);
+
+            elasticSearchClient.create(sentenceToInsertIntoBody, function (err, response) {
+                if (err) {
+                    if (err.displayName === 'Conflict') {
+                        console.warn(`Duplicate id ${sentenceToInsertIntoBody.id}, skipping`);
+                    } else {
+                        return originalItCb(err);
+                    }
+                }
+
+                counter++;
+
+                if (counter % 100) {
+                    return originalItCb();
+                }
+
+                console.log(`Added ${counter} of ${numberOfSentencesToAdd}. ${(counter / numberOfSentencesToAdd * 100).toFixed(0)}%`);
+                originalItCb();
+            });
+        }, (err) => {
+            if (err) {
+                return console.error(err);
+            }
+
+            console.log(`Added ${counter} of ${numberOfSentencesToAdd}. ${(counter / numberOfSentencesToAdd * 100).toFixed(0)}%`);
+            console.log('Indexed all successfully');
+        })
     }
 );
+
+function getIndexName(language) {
+    if (supportedLanguages.indexOf(language) > -1) {
+        return `lingozen-${language}`;
+    }
+
+    throw new Error(`Unknown lang ${original.language}`);
+}

@@ -56,7 +56,7 @@ languagesToTranslateSentencesTo.forEach(languageName => translations[languageNam
 /**
  * IF YOU GET SOCKET HANG UP ERRORS, LOWER THIS NUMBER
  */
-const numberOfSentencesFromOriginToDoPerIteration = 5;
+const numberOfSentencesFromOriginToDoPerIteration = 20;
 const backUpEveryXRuns = 5;
 
 let numberOfRunsCompleted = 0;
